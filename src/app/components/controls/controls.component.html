@@ -1,0 +1,83 @@
+<div class="controls-panel">
+  <h3>⚙️ Controles</h3>
+  
+  <div class="button-group">
+    <button 
+      class="control-btn start"
+      [disabled]="simulator.isRunning()"
+      (click)="simulator.start()">
+      ▶️ Iniciar
+    </button>
+    
+    <button 
+      class="control-btn stop"
+      [disabled]="!simulator.isRunning()"
+      (click)="simulator.stop()">
+      ⏸️ Pausar
+    </button>
+    
+    <button 
+      class="control-btn clear"
+      (click)="clearAll()">
+      🗑️ Limpiar Todo
+    </button>
+  </div>
+
+  <div class="test-section">
+    <h4>🧪 Pruebas Arduino</h4>
+    <button class="test-btn" (click)="testPin13()">
+      💡 Test Pin 13 HIGH
+    </button>
+    <button class="test-btn" (click)="testPin12()">
+      💡 Test Pin 12 HIGH
+    </button>
+    <button class="test-btn" (click)="testAllOff()">
+      🔴 Apagar Todo
+    </button>
+    <button class="test-btn" (click)="testBlink()">
+      {{ blinkInterval ? '⏸️ Detener Blink' : '⚡ Blink Pin 13' }}
+    </button>
+  </div>
+
+  <div class="test-section">
+    <h4>🔬 Debug</h4>
+    <button class="test-btn debug" (click)="debugCircuit()">
+      🔍 Debug Circuito
+    </button>
+    <button class="test-btn debug" (click)="testProtoboardConnections()">
+      🧪 Test Protoboard
+    </button>
+  </div>
+
+  <div class="tutorial-section">
+    <h4>📚 Tutorial Rápido</h4>
+    <div class="tutorial-content">
+      <p class="tutorial-title">🔌 Cómo conectar un LED:</p>
+      <ol class="tutorial-steps">
+        <li><strong>1.</strong> Selecciona <span class="highlight">LED Rojo</span></li>
+        <li><strong>2.</strong> Colócalo en <span class="highlight">A1</span> (fila A, columna 1)</li>
+        <li class="indent">
+          <span class="pin anode">+</span> Ánodo en A1<br>
+          <span class="pin cathode">-</span> Cátodo en A2
+        </li>
+        <li><strong>3.</strong> Selecciona <span class="highlight">Cable Rojo</span></li>
+        <li><strong>4.</strong> Conecta: <span class="highlight">D13 → B1</span> (o cualquier fila A-E, columna 1)</li>
+        <li><strong>5.</strong> Selecciona <span class="highlight">Cable Negro</span></li>
+        <li><strong>6.</strong> Conecta: <span class="highlight">C2 → GND</span> (o cualquier fila A-E, columna 2)</li>
+        <li><strong>7.</strong> Presiona <span class="highlight">▶️ Iniciar</span></li>
+        <li><strong>8.</strong> Presiona <span class="highlight">💡 Test Pin 13</span></li>
+        <li class="success">✅ ¡El LED debería encender!</li>
+      </ol>
+      
+      <div class="warning-box">
+        <p><strong>💡 Importante:</strong></p>
+        <p>Las conexiones verticales funcionan así:</p>
+        <ul>
+          <li><strong>Columna 1:</strong> A1, B1, C1, D1, E1 están conectados</li>
+          <li><strong>Canal central:</strong> E y F NO están conectados</li>
+          <li>Puedes conectar el cable en <strong>cualquier fila</strong> de la columna</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,247 @@
+.controls-panel {
+  background: #34495e;
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 20px;
+}
+
+h4 {
+  margin: 15px 0 10px 0;
+  font-size: 16px;
+  text-align: center;
+  color: #ecf0f1;
+}
+
+.button-group,
+.test-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.test-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #2c3e50;
+}
+
+.tutorial-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #2c3e50;
+}
+
+.tutorial-content {
+  background: #2c3e50;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.tutorial-title {
+  margin: 0 0 12px 0;
+  font-weight: bold;
+  font-size: 15px;
+  color: #3498db;
+}
+
+.tutorial-steps {
+  text-align: left;
+  padding-left: 12px;
+  margin: 10px 0;
+  font-size: 13px;
+  line-height: 1.8;
+  list-style: none;
+}
+
+.tutorial-steps li {
+  margin: 10px 0;
+  color: #ecf0f1;
+  position: relative;
+  padding-left: 8px;
+}
+
+.tutorial-steps li.indent {
+  padding-left: 20px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tutorial-steps li.success {
+  color: #2ecc71;
+  font-weight: bold;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #34495e;
+}
+
+.highlight {
+  color: #3498db;
+  font-weight: bold;
+  background: rgba(52, 152, 219, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.pin {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.pin.anode {
+  background: #c0392b;
+  border: 2px solid #e74c3c;
+  color: white;
+}
+
+.pin.cathode {
+  background: #2c3e50;
+  border: 2px solid #95a5a6;
+  color: white;
+}
+
+.warning-box {
+  background: #16a085;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 15px;
+  border-left: 4px solid #1abc9c;
+}
+
+.warning-box p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+.warning-box strong {
+  color: #fff;
+}
+
+.warning-box ul {
+  margin: 8px 0;
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+.warning-box li {
+  margin: 4px 0;
+}
+
+.control-btn,
+.test-btn {
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.control-btn:hover:not(:disabled),
+.test-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-btn.start {
+  background: #27ae60;
+  color: white;
+}
+
+.control-btn.start:hover:not(:disabled) {
+  background: #2ecc71;
+}
+
+.control-btn.stop {
+  background: #f39c12;
+  color: white;
+}
+
+.control-btn.stop:hover:not(:disabled) {
+  background: #f1c40f;
+}
+
+.control-btn.clear {
+  background: #e74c3c;
+  color: white;
+}
+
+.control-btn.clear:hover {
+  background: #c0392b;
+}
+
+.test-btn {
+  background: #3498db;
+  color: white;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.test-btn:hover {
+  background: #2980b9;
+}
+
+.test-btn.debug {
+  background: #9b59b6;
+}
+
+.test-btn.debug:hover {
+  background: #8e44ad;
+}
+
+/* Scrollbar personalizado */
+.controls-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.controls-panel::-webkit-scrollbar-track {
+  background: #2c3e50;
+  border-radius: 4px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+  background: #3498db;
+  border-radius: 4px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb:hover {
+  background: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .controls-panel {
+    max-height: none;
+  }
+
+  .tutorial-steps {
+    font-size: 12px;
+  }
+
+  .control-btn,
+  .test-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+}

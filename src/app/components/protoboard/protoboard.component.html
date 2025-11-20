@@ -1,0 +1,137 @@
+<div class="protoboard-container">
+  <h2>Protoboard Virtual</h2>
+
+  <div class="protoboard-info">
+    <p class="info-text">
+      💡 <strong>Conexiones verticales:</strong> Los agujeros de la misma columna están conectados (ej: A1-B1-C1-D1-E1)
+    </p>
+  </div>
+
+  <div
+    class="grid"
+    [class.placement-mode]="selection.isPlacementMode()"
+    [class.wiring-mode]="selection.isWiringMode()">
+    
+    <!-- Labels de columnas -->
+    <div class="column-labels">
+      <div class="label-spacer"></div>
+      @for (col of cols; track col) {
+        <div class="column-label">{{ col + 1 }}</div>
+      }
+    </div>
+
+    <!-- Sección superior (filas A-E) -->
+    <div class="section section-top">
+      @for (row of topRows; track row) {
+        <div class="row-container">
+          <div class="row-label">{{ getRowLabel(row) }}</div>
+          <div class="row">
+            @for (col of cols; track col) {
+              <div
+                class="hole"
+                [class.occupied]="isOccupied(row, col)"
+                [class.hover-valid]="(selection.isPlacementMode() || selection.isWiringMode()) && !isOccupied(row, col)"
+                [class.wire-start]="isWireStart(row, col)"
+                [class.anode]="isPinType(row, col, 'A+')"
+                [class.cathode]="isPinType(row, col, 'K-')"
+                [class.anode-on]="isPinType(row, col, 'A+') && isPinOn(row, col)"
+                [class.cathode-on]="isPinType(row, col, 'K-') && isPinOn(row, col)"
+                [class.resistor]="isPinType(row, col, 'RESISTOR')"
+                [attr.data-led-color]="getLEDColorForPin(row, col)"
+                (click)="onHoleClick(row, col)"
+                [title]="getHoleTitle(row, col)">
+                @if (getComponentAt(row, col); as component) {
+                  <span
+                    class="component-icon"
+                    [class.led-on]="isLEDOn(component)"
+                    [style.color]="getLEDColor(component)">
+                    {{ getComponentIcon(component, row, col) }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Canal central -->
+    <div class="canal-central">
+      <div class="canal-line"></div>
+    </div>
+
+    <!-- Sección inferior (filas F-J) -->
+    <div class="section section-bottom">
+      @for (row of bottomRows; track row) {
+        <div class="row-container">
+          <div class="row-label">{{ getRowLabel(row) }}</div>
+          <div class="row">
+            @for (col of cols; track col) {
+              <div
+                class="hole"
+                [class.occupied]="isOccupied(row, col)"
+                [class.hover-valid]="(selection.isPlacementMode() || selection.isWiringMode()) && !isOccupied(row, col)"
+                [class.wire-start]="isWireStart(row, col)"
+                [class.anode]="isPinType(row, col, 'A+')"
+                [class.cathode]="isPinType(row, col, 'K-')"
+                [class.anode-on]="isPinType(row, col, 'A+') && isPinOn(row, col)"
+                [class.cathode-on]="isPinType(row, col, 'K-') && isPinOn(row, col)"
+                [class.resistor]="isPinType(row, col, 'RESISTOR')"
+                [attr.data-led-color]="getLEDColorForPin(row, col)"
+                (click)="onHoleClick(row, col)"
+                [title]="getHoleTitle(row, col)">
+                @if (getComponentAt(row, col); as component) {
+                  <span
+                    class="component-icon"
+                    [class.led-on]="isLEDOn(component)"
+                    [style.color]="getLEDColor(component)">
+                    {{ getComponentIcon(component, row, col) }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <p>📦 Componentes: {{ componentCount() }}</p>
+    <p>⚡ Estado: {{ simulator.isRunning() ? '🟢 Corriendo' : '🔴 Detenido' }}</p>
+
+    @if (selection.isPlacementMode()) {
+      <p class="placement-hint">
+        👆 Haz clic en la protoboard para colocar:
+        <strong>{{ selection.selectedTemplate()?.name }}</strong>
+      </p>
+    }
+
+    @if (selection.isWiringMode()) {
+      <p class="placement-hint wiring">
+        🔌 Modo cableado: <strong>{{ selection.selectedTemplate()?.name }}</strong>
+        @if (selection.wireStartSet()) {
+          <span class="step">✅ Punto inicial → 👆 Selecciona punto final</span>
+        } @else {
+          <span class="step">👆 Selecciona punto inicial</span>
+        }
+      </p>
+    }
+  </div>
+
+  <div class="legend">
+    <h4>📖 Leyenda LED</h4>
+    <div class="legend-item">
+      <span class="legend-pin anode">+</span>
+      <span>Ánodo (positivo)</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-pin cathode">-</span>
+      <span>Cátodo (negativo)</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-pin resistor">R</span>
+      <span>Resistor</span>
+    </div>
+  </div>
+</div>
