@@ -1,9 +1,11 @@
+// src/app/app.component.ts
 import { Component } from '@angular/core';
 import { ToolboxComponent } from './components/toolbox/toolbox.component';
 import { ProtoboardComponent } from './components/protoboard/protoboard.component';
 import { ControlsComponent } from './components/controls/controls.component';
 import { ArduinoBoardComponent } from './components/arduino-board/arduino-board.component';
 import { CircuitDiagnosticsComponent } from './components/circuit-diagnostics/circuit-diagnostics.component';
+import { ThreejsViewerComponent } from './components/threejs-viewer.component';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +15,14 @@ import { CircuitDiagnosticsComponent } from './components/circuit-diagnostics/ci
     ProtoboardComponent, 
     ControlsComponent,
     ArduinoBoardComponent,
-    CircuitDiagnosticsComponent
+    CircuitDiagnosticsComponent,
+    ThreejsViewerComponent // ✅ AÑADIR
   ],
   template: `
     <div class="app-container">
       <header>
         <h1>⚡ Simulador de Arduino</h1>
-        <p class="subtitle">Sistema de colocación por clic + Cables de conexión</p>
+        <p class="subtitle">Sistema 2D + Vista 3D en Tiempo Real</p>
       </header>
 
       <div class="workspace">
@@ -29,6 +32,12 @@ import { CircuitDiagnosticsComponent } from './components/circuit-diagnostics/ci
         </aside>
 
         <main class="main-content">
+          <!-- ✅ AÑADIR: Vista 3D arriba -->
+          <div class="view-3d-container">
+            <app-threejs-viewer></app-threejs-viewer>
+          </div>
+
+          <!-- Vista 2D abajo -->
           <div class="boards">
             <app-arduino-board></app-arduino-board>
             <app-protoboard></app-protoboard>
@@ -84,8 +93,17 @@ import { CircuitDiagnosticsComponent } from './components/circuit-diagnostics/ci
 
     .main-content {
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ✅ NUEVO: Contenedor para vista 3D */
+    .view-3d-container {
+      width: 100%;
+      min-height: 500px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     .boards {
@@ -95,7 +113,6 @@ import { CircuitDiagnosticsComponent } from './components/circuit-diagnostics/ci
       width: 100%;
     }
 
-    /* Responsive design */
     @media (max-width: 1600px) {
       .workspace {
         grid-template-columns: 260px 1fr 260px;
@@ -138,9 +155,13 @@ import { CircuitDiagnosticsComponent } from './components/circuit-diagnostics/ci
       .workspace {
         gap: 15px;
       }
+
+      .view-3d-container {
+        min-height: 350px;
+      }
     }
   `]
 })
 export class AppComponent {
-  title = 'Arduino Simulator';
+  title = 'Arduino Simulator 3D';
 }

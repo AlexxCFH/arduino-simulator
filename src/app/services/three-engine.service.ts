@@ -1,13 +1,13 @@
 import { Injectable, ElementRef, signal, WritableSignal } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SceneManagerService } from './managers/scene-manager.service';
-import { CameraManagerService } from './managers/camera-manager.service';
-import { RendererManagerService } from './managers/renderer-manager.service';
-import { LightingManagerService } from './managers/lighting-manager.service';
-import { ArduinoModelService } from './models/arduino-model.service';
-import { ProtoboardModelService } from './models/protoboard-model.service';
-import { ComponentModelService } from './models/component-model.service';
+import { SceneManagerService } from './threejs-engine/managers/scene-manager.service';
+import { CameraManagerService } from './threejs-engine/managers/camera-manager.service';
+import { RendererManagerService } from './threejs-engine/managers/renderer-manager.service';
+import { LightingManagerService } from './threejs-engine/managers/lighting-manager.service';
+import { ArduinoModelService } from './threejs-engine/models/arduino-model.service';
+import { ProtoboardModelService } from './threejs-engine/models/protoboard-model.service';
+import { ComponentModelService } from './threejs-engine/models/component-model.service';
 
 /**
  * THREEJS ENGINE - PATRÓN FACHADA
@@ -335,7 +335,7 @@ export class ThreeEngineService {
     const objectsToRemove: THREE.Object3D[] = [];
     
     scene.traverse((object) => {
-      if (object.userData.isComponent) {
+      if (object.userData['isComponent']) {
         objectsToRemove.push(object);
       }
     });

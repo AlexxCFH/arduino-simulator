@@ -7,7 +7,7 @@ import {
   signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThreeEngineService } from '../services/three-engine.service';
+import { ThreeEngineService } from '../../services/three-engine.service';
 
 /**
  * THREEJS VIEWER COMPONENT
