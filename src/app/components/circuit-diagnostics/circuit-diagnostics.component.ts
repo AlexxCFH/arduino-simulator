@@ -264,56 +264,56 @@ export class CircuitDiagnosticsComponent {
   constructor(private simulator: CircuitSimulatorService) {}
 
   private analyzeLED(led: LED, components: any[]): DiagnosticResult {
-  const details: string[] = [];
-  let status: 'ok' | 'warning' | 'error' = 'ok';
-  
-  const anodePos = led.getAnode().position;
-  const cathodePos = led.getCathode().position;
-  
-  let message = `LED ${led.color} en [${led.position.row},${led.position.col}]`;
-  
-  details.push(`📍 Ánodo (+): [${anodePos.row},${anodePos.col}]`);
-  details.push(`📍 Cátodo (-): [${cathodePos.row},${cathodePos.col}]`);
+    const details: string[] = [];
+    let status: 'ok' | 'warning' | 'error' = 'ok';
+    
+    const anodePos = led.getAnode().position;
+    const cathodePos = led.getCathode().position;
+    
+    let message = `LED ${led.color} en [${led.position.row},${led.position.col}]`;
+    
+    details.push(`📍 Ánodo (+): [${anodePos.row},${anodePos.col}]`);
+    details.push(`📍 Cátodo (-): [${cathodePos.row},${cathodePos.col}]`);
 
-  const anodeConnected = this.isConnectedToVoltage(led.getAnode(), components);
-  const cathodeConnected = this.isConnectedToGround(led.getCathode(), components);
+    const anodeConnected = this.isConnectedToVoltage(led.getAnode(), components);
+    const cathodeConnected = this.isConnectedToGround(led.getCathode(), components);
 
-  if (!anodeConnected) {
-    status = 'error';
-    details.push(`❌ Necesita cable desde D13 (o 5V) a [${anodePos.row},${anodePos.col}]`);
-  } else {
-    details.push(`✅ Ánodo conectado a voltaje`);
+    if (!anodeConnected) {
+      status = 'error';
+      details.push(`❌ Necesita cable desde D13 (o 5V) a [${anodePos.row},${anodePos.col}]`);
+    } else {
+      details.push(`✅ Ánodo conectado a voltaje`);
+    }
+
+    if (!cathodeConnected) {
+      status = 'error';
+      details.push(`❌ Necesita cable desde [${cathodePos.row},${cathodePos.col}] a GND`);
+    } else {
+      details.push(`✅ Cátodo conectado a GND`);
+    }
+
+    // Mostrar voltajes actuales
+    const anodeVoltage = led.getAnode().voltage;
+    const cathodeVoltage = led.getCathode().voltage;
+    
+    details.push(`⚡ Voltaje ánodo: ${anodeVoltage.toFixed(2)}V`);
+    details.push(`⚡ Voltaje cátodo: ${cathodeVoltage.toFixed(2)}V`);
+    details.push(`⚡ Diferencia: ${(anodeVoltage - cathodeVoltage).toFixed(2)}V`);
+
+    if (status === 'ok') {
+      message = led.isOn ? `✓ LED ${led.color} ENCENDIDO 💡` : `✓ LED ${led.color} listo (apagado)`;
+    } else {
+      message = `✗ LED ${led.color} necesita conexiones`;
+    }
+
+    return {
+      component: led,
+      type: `LED ${led.color}`,
+      status,
+      message,
+      details
+    };
   }
-
-  if (!cathodeConnected) {
-    status = 'error';
-    details.push(`❌ Necesita cable desde [${cathodePos.row},${cathodePos.col}] a GND`);
-  } else {
-    details.push(`✅ Cátodo conectado a GND`);
-  }
-
-  // Mostrar voltajes actuales
-  const anodeVoltage = led.getAnode().voltage;
-  const cathodeVoltage = led.getCathode().voltage;
-  
-  details.push(`⚡ Voltaje ánodo: ${anodeVoltage.toFixed(2)}V`);
-  details.push(`⚡ Voltaje cátodo: ${cathodeVoltage.toFixed(2)}V`);
-  details.push(`⚡ Diferencia: ${(anodeVoltage - cathodeVoltage).toFixed(2)}V`);
-
-  if (status === 'ok') {
-    message = led.isOn ? `✓ LED ${led.color} ENCENDIDO 💡` : `✓ LED ${led.color} listo (apagado)`;
-  } else {
-    message = `✗ LED ${led.color} necesita conexiones`;
-  }
-
-  return {
-    component: led,
-    type: `LED ${led.color}`,
-    status,
-    message,
-    details
-  };
-}
 
   private analyzeWire(wire: Wire): DiagnosticResult {
     if (!wire.isComplete()) {

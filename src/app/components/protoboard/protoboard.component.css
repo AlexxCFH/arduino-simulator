@@ -63,6 +63,38 @@ h2 {
   font-size: 11px;
   color: #95a5a6;
   font-weight: bold;
+  position: relative;
+  transition: all 0.3s;
+}
+
+/* Indicador de conectividad en columnas */
+.column-label.has-connectivity {
+  color: #3498db;
+  font-weight: 900;
+  background: rgba(52, 152, 219, 0.1);
+  border-radius: 4px;
+  padding: 2px 0;
+}
+
+.connectivity-dot {
+  position: absolute;
+  top: -8px;
+  right: 50%;
+  transform: translateX(50%);
+  color: #3498db;
+  font-size: 8px;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateX(50%) scale(1.3);
+  }
 }
 
 /* Secciones de la protoboard */
@@ -135,6 +167,12 @@ h2 {
   font-size: 16px;
   transition: all 0.2s;
   position: relative;
+}
+
+/* Indicador sutil de columna conectada */
+.hole.in-connected-column {
+  box-shadow: inset 0 0 8px rgba(52, 152, 219, 0.2);
+  border-color: rgba(52, 152, 219, 0.3);
 }
 
 .hole:hover {
@@ -506,6 +544,13 @@ h2 {
 .legend-pin.resistor {
   background: #e67e22;
   border: 3px solid #f39c12;
+}
+
+.connectivity-indicator {
+  color: #3498db;
+  font-size: 24px;
+  font-weight: bold;
+  animation: pulse-dot 2s infinite;
 }
 
 @keyframes fadeIn {

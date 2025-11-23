@@ -44,6 +44,34 @@ export class ProtoboardComponent {
   }
 
   /**
+   * Verifica si una columna tiene conectividad vertical (tiene componentes en esa columna)
+   */
+  hasVerticalConnectivity(col: number): boolean {
+    const components = this.simulator.components();
+    
+    // Verificar si hay algún componente en esta columna
+    return components.some(component => 
+      component.pins.some(pin => pin.position.col === col)
+    );
+  }
+
+  /**
+   * Obtiene el número de componentes conectados en una columna específica
+   */
+  getComponentsInColumn(col: number): number {
+    const components = this.simulator.components();
+    const uniqueComponents = new Set<string>();
+    
+    components.forEach(component => {
+      if (component.pins.some(pin => pin.position.col === col)) {
+        uniqueComponents.add(component.id);
+      }
+    });
+    
+    return uniqueComponents.size;
+  }
+
+  /**
    * Maneja el clic en un agujero de la protoboard
    */
   onHoleClick(row: number, col: number) {
@@ -260,7 +288,8 @@ export class ProtoboardComponent {
     }
 
     const section = row < 5 ? 'Superior (A-E)' : 'Inferior (F-J)';
-    return `${holeLabel}\nLibre\nSección: ${section}\nConectado verticalmente en esta columna`;
+    const connectivity = this.hasVerticalConnectivity(col) ? '✅ Conectado verticalmente' : 'Libre';
+    return `${holeLabel}\n${section}\n${connectivity}`;
   }
 
   /**

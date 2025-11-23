@@ -56,6 +56,22 @@ export class LED extends Component {
     console.log(`   Diferencia: ${voltageDrop.toFixed(2)}V`);
     console.log(`   Umbral: ${this.thresholdVoltage}V`);
 
+    // CRÍTICO: Verificar que existe un circuito completo
+    // El LED SOLO enciende si:
+    // 1. El ánodo tiene voltaje positivo (> umbral)
+    // 2. El cátodo está conectado a tierra (voltaje cercano a 0)
+    // 3. La diferencia de voltaje es suficiente
+    
+    // Verificar que el cátodo esté efectivamente conectado a GND
+    // (voltaje muy bajo, típicamente < 0.5V)
+    const cathodeIsGrounded = cathodeVoltage < 0.5;
+    
+    if (!cathodeIsGrounded) {
+      this.isOn = false;
+      console.log(`   ❌ CÁTODO NO ESTÁ CONECTADO A GND (${cathodeVoltage.toFixed(2)}V)`);
+      return;
+    }
+
     // Verificar polaridad incorrecta
     if (voltageDrop < 0) {
       this.isOn = false;
@@ -66,18 +82,25 @@ export class LED extends Component {
     // Verificar voltaje mínimo
     if (voltageDrop < this.thresholdVoltage) {
       this.isOn = false;
-      console.log(`   🔴 APAGADO (voltaje insuficiente)`);
+      console.log(`   🔴 APAGADO (voltaje insuficiente: ${voltageDrop.toFixed(2)}V < ${this.thresholdVoltage}V)`);
       return;
     }
 
-    // LED enciende
+    // Verificar que el ánodo tenga voltaje significativo
+    if (anodeVoltage < this.thresholdVoltage) {
+      this.isOn = false;
+      console.log(`   🔴 APAGADO (ánodo sin voltaje suficiente: ${anodeVoltage.toFixed(2)}V)`);
+      return;
+    }
+
+    // LED enciende - TODAS las condiciones se cumplen
     this.isOn = true;
 
     const current = Math.min((voltageDrop - this.forwardVoltage) / 220, this.maxCurrent);
     this.pins[0].current = current;
     this.pins[1].current = current;
 
-    console.log(`   💡 ENCENDIDO!`);
+    console.log(`   💡 ENCENDIDO! (corriente: ${(current * 1000).toFixed(2)}mA)`);
   }
 
   getAnode(): Pin {

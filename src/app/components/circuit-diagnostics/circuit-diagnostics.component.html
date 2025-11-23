@@ -1,1 +1,120 @@
-<p>circuit-diagnostics works!</p>
+<div class="diagnostics-panel">
+  <h3>🔍 Diagnóstico del Circuito</h3>
+  
+  <!-- Resumen de componentes -->
+  <div class="summary">
+    <div class="stat">
+      <span class="label">Componentes:</span>
+      <span class="value">{{ componentCount() }}</span>
+    </div>
+    <div class="stat">
+      <span class="label">LEDs:</span>
+      <span class="value">{{ ledCount() }}</span>
+    </div>
+    <div class="stat">
+      <span class="label">Cables:</span>
+      <span class="value">{{ wireCount() }}</span>
+    </div>
+  </div>
+
+  <!-- Lista de diagnósticos -->
+  <div class="diagnostics-list">
+    @for (result of diagnostics(); track $index) {
+      <div class="diagnostic-item" [class]="result.status">
+        <div class="diagnostic-header">
+          <span class="icon">
+            @if (result.status === 'ok') { ✅ }
+            @if (result.status === 'warning') { ⚠️ }
+            @if (result.status === 'error') { ❌ }
+          </span>
+          <span class="type">{{ result.type }}</span>
+        </div>
+        <div class="diagnostic-message">{{ result.message }}</div>
+        @if (result.details && result.details.length > 0) {
+          <ul class="diagnostic-details">
+            @for (detail of result.details; track $index) {
+              <li>{{ detail }}</li>
+            }
+          </ul>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Estado del circuito -->
+  @if (circuitComplete()) {
+    <div class="circuit-complete">
+      <h4>🎉 ¡Circuito Completo!</h4>
+      <p>El circuito está correctamente conectado.</p>
+      <p>Presiona <strong>▶️ Iniciar</strong> y luego <strong>💡 Test Pin</strong></p>
+    </div>
+  } @else {
+    <div class="circuit-incomplete">
+      <h4>⚠️ Circuito Incompleto</h4>
+      <p>Revisa los mensajes de arriba para completar el circuito.</p>
+    </div>
+  }
+
+  <!-- Separador -->
+  <div class="section-divider"></div>
+
+  <!-- Pruebas de Protoboard -->
+  <div class="tests-section">
+    <div class="tests-header">
+      <h3>🧪 Pruebas de Protoboard</h3>
+      <button 
+        class="toggle-btn" 
+        (click)="toggleTests()"
+        [class.active]="showTests">
+        {{ showTests ? '▼' : '▶' }}
+      </button>
+    </div>
+
+    @if (showTests) {
+      <div class="tests-content">
+        <p class="tests-description">
+          Verifica que la lógica de conexiones verticales funcione correctamente.
+        </p>
+
+        <button class="run-tests-btn" (click)="runAllTests()">
+          ▶️ Ejecutar Todas las Pruebas
+        </button>
+
+        @if (testResults.length > 0) {
+          <div class="tests-summary">
+            <div class="test-stat passed-stat">
+              ✅ Pasadas: <strong>{{ passedTests }}</strong>
+            </div>
+            <div class="test-stat failed-stat">
+              ❌ Fallidas: <strong>{{ failedTests }}</strong>
+            </div>
+            <div class="test-stat total-stat">
+              📊 Total: <strong>{{ totalTests }}</strong>
+            </div>
+          </div>
+
+          <div class="test-results">
+            @for (result of testResults; track $index) {
+              <div class="test-item" [class.passed]="result.passed" [class.failed]="!result.passed">
+                <div class="test-header">
+                  <span class="test-icon">{{ result.passed ? '✅' : '❌' }}</span>
+                  <div class="test-info">
+                    <div class="test-name">{{ result.name }}</div>
+                    <div class="test-description">{{ result.description }}</div>
+                    @if (result.details) {
+                      <div class="test-details">{{ result.details }}</div>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="no-tests">
+            <p>👆 Haz clic en "Ejecutar Todas las Pruebas" para comenzar</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -12,11 +12,18 @@
     [class.placement-mode]="selection.isPlacementMode()"
     [class.wiring-mode]="selection.isWiringMode()">
     
-    <!-- Labels de columnas -->
+    <!-- Labels de columnas con indicador de conectividad -->
     <div class="column-labels">
       <div class="label-spacer"></div>
       @for (col of cols; track col) {
-        <div class="column-label">{{ col + 1 }}</div>
+        <div class="column-label" 
+             [class.has-connectivity]="hasVerticalConnectivity(col)"
+             [title]="hasVerticalConnectivity(col) ? 'Columna ' + (col + 1) + ': ' + getComponentsInColumn(col) + ' componente(s) conectado(s)' : 'Columna ' + (col + 1) + ': Sin componentes'">
+          {{ col + 1 }}
+          @if (hasVerticalConnectivity(col)) {
+            <span class="connectivity-dot">●</span>
+          }
+        </div>
       }
     </div>
 
@@ -30,6 +37,7 @@
               <div
                 class="hole"
                 [class.occupied]="isOccupied(row, col)"
+                [class.in-connected-column]="hasVerticalConnectivity(col)"
                 [class.hover-valid]="(selection.isPlacementMode() || selection.isWiringMode()) && !isOccupied(row, col)"
                 [class.wire-start]="isWireStart(row, col)"
                 [class.anode]="isPinType(row, col, 'A+')"
@@ -70,6 +78,7 @@
               <div
                 class="hole"
                 [class.occupied]="isOccupied(row, col)"
+                [class.in-connected-column]="hasVerticalConnectivity(col)"
                 [class.hover-valid]="(selection.isPlacementMode() || selection.isWiringMode()) && !isOccupied(row, col)"
                 [class.wire-start]="isWireStart(row, col)"
                 [class.anode]="isPinType(row, col, 'A+')"
@@ -120,7 +129,7 @@
   </div>
 
   <div class="legend">
-    <h4>📖 Leyenda LED</h4>
+    <h4>📖 Leyenda</h4>
     <div class="legend-item">
       <span class="legend-pin anode">+</span>
       <span>Ánodo (positivo)</span>
@@ -132,6 +141,10 @@
     <div class="legend-item">
       <span class="legend-pin resistor">R</span>
       <span>Resistor</span>
+    </div>
+    <div class="legend-item">
+      <span class="connectivity-indicator">●</span>
+      <span>Columna con conectividad vertical</span>
     </div>
   </div>
 </div>

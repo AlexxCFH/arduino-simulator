@@ -139,7 +139,7 @@ export class Circuit {
     const pinId = this.connectionToPinId(connection);
     const connectedPins = this.findConnectedPins(pinId);
 
-    console.log(`⚡ Estableciendo ${voltage}V en ${pinId} y ${connectedPins.length} pines conectados`);
+    console.log(`⚡ Estableciendo ${voltage.toFixed(2)}V en ${pinId} y ${connectedPins.length} pines conectados`);
 
     for (const pin of connectedPins) {
       this.nodes.set(pin, {

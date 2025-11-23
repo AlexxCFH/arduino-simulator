@@ -26,19 +26,25 @@ export class CircuitSimulatorService {
   }
 
   private initializeArduino(): void {
-    // Configurar algunos pines por defecto
+    // Configurar pines por defecto
+    // Pin 13 ya viene configurado como OUTPUT y HIGH por defecto
+    // Esto permite que los LEDs conectados a D13 enciendan automáticamente
     this.arduino.pinMode(13, 'OUTPUT');
-    this.arduino.digitalWrite(13, 'HIGH');
+    this.arduino.digitalWrite(13, 'HIGH'); // ✨ Pin 13 HIGH por defecto
     
     console.log('🤖 Arduino inicializado');
+    console.log('   📍 Pin 13: OUTPUT, HIGH (5V)');
+    console.log('   💡 Los LEDs conectados a D13 encenderán al iniciar la simulación');
   }
 
   addComponent(component: Component) {
     this.components.update(list => [...list, component]);
     console.log('✅ Componente agregado:', component.type, 'ID:', component.id);
     
-    // Actualizar conexiones inmediatamente
-    this.updateConnections();
+    // Si la simulación está corriendo, actualizar inmediatamente
+    if (this.isRunning()) {
+      this.updateConnections();
+    }
   }
 
   removeComponent(id: string) {
@@ -51,7 +57,11 @@ export class CircuitSimulatorService {
     }
 
     console.log('🗑️ Componente eliminado:', id);
-    this.updateConnections();
+    
+    // Si la simulación está corriendo, actualizar inmediatamente
+    if (this.isRunning()) {
+      this.updateConnections();
+    }
   }
 
   isPositionOccupied(row: number, col: number): boolean {
@@ -99,7 +109,10 @@ export class CircuitSimulatorService {
     this.arduinoPinMap.set(key, component.id);
     console.log(`🔌 Componente ${component.id} conectado al pin`, key);
 
-    this.updateConnections();
+    // Si la simulación está corriendo, actualizar inmediatamente
+    if (this.isRunning()) {
+      this.updateConnections();
+    }
 
     return true;
   }
@@ -127,7 +140,7 @@ export class CircuitSimulatorService {
     // Obtener voltajes del Arduino
     const arduinoVoltages = this.arduino.getVoltageMap();
     
-    // Propagar voltajes a través de los cables
+    // Propagar voltajes a través de los cables y conexiones internas
     this.connectionManager.propagateVoltages(arduinoVoltages);
   }
 
@@ -135,11 +148,27 @@ export class CircuitSimulatorService {
     if (this.isRunning()) return;
 
     this.isRunning.set(true);
-    console.log('▶️ Simulación iniciada');
+    console.log('═══════════════════════════════════════');
+    console.log('▶️ SIMULACIÓN INICIADA');
+    console.log('═══════════════════════════════════════');
+    console.log('📊 Estado del Arduino:');
+    console.log('   Pin 13: HIGH (5V)');
+    console.log('   GND: 0V');
+    console.log('');
+    console.log('🔄 Actualizando conexiones...');
 
     // Primera actualización inmediata
     this.updateConnections();
+    
+    console.log('');
+    console.log('💡 Si tienes un LED conectado correctamente:');
+    console.log('   ✅ Ánodo → D13 (directamente o vía protoboard)');
+    console.log('   ✅ Resistencia en serie (220Ω-1kΩ)');
+    console.log('   ✅ Cátodo → GND');
+    console.log('   → El LED debería encender AHORA 💡');
+    console.log('═══════════════════════════════════════\n');
 
+    // Actualización continua cada 100ms
     this.intervalId = setInterval(() => {
       this.simulationStep();
     }, 100);
@@ -154,17 +183,11 @@ export class CircuitSimulatorService {
   private simulationStep() {
     // Actualizar conexiones y propagar voltajes
     this.updateConnections();
-    
-    // Los componentes ya calculan su estado en updateConnections
-    // Solo logueamos el estado actual
-    const leds = this.components().filter(c => c.type === 'LED');
-    if (leds.length > 0) {
-      // Los LEDs ya loguean su estado en calculateState()
-    }
   }
 
   pinMode(pin: number, mode: 'INPUT' | 'OUTPUT'): void {
     this.arduino.pinMode(pin, mode);
+    console.log(`📌 pinMode(${pin}, ${mode})`);
     if (this.isRunning()) {
       this.updateConnections();
     }
@@ -172,6 +195,7 @@ export class CircuitSimulatorService {
 
   digitalWrite(pin: number, state: 'HIGH' | 'LOW'): void {
     this.arduino.digitalWrite(pin, state);
+    console.log(`⚡ digitalWrite(${pin}, ${state})`);
     if (this.isRunning()) {
       this.updateConnections();
     }
@@ -183,6 +207,7 @@ export class CircuitSimulatorService {
 
   analogWrite(pin: number, value: number): void {
     this.arduino.analogWrite(pin, value);
+    console.log(`📊 analogWrite(${pin}, ${value})`);
     if (this.isRunning()) {
       this.updateConnections();
     }
@@ -190,5 +215,28 @@ export class CircuitSimulatorService {
 
   analogRead(pin: number): number {
     return this.arduino.analogRead(pin);
+  }
+
+  /**
+   * Reinicia todos los pines del Arduino a su estado por defecto
+   */
+  resetArduino(): void {
+    console.log('🔄 Reiniciando Arduino...');
+    
+    // Apagar todos los pines digitales
+    for (let i = 0; i < 14; i++) {
+      this.arduino.digitalWrite(i, 'LOW');
+    }
+    
+    // Volver a configurar el pin 13 por defecto
+    this.arduino.pinMode(13, 'OUTPUT');
+    this.arduino.digitalWrite(13, 'HIGH');
+    
+    console.log('✅ Arduino reiniciado');
+    console.log('   Pin 13: OUTPUT, HIGH (5V)');
+    
+    if (this.isRunning()) {
+      this.updateConnections();
+    }
   }
 }

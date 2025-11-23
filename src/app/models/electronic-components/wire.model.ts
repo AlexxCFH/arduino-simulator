@@ -19,8 +19,7 @@ export class Wire extends Component {
     super('WIRE', position);
     this.color = color;
 
-    // IMPORTANTE: Los pines del wire se actualizan dinámicamente
-    // No se inicializan aquí porque pueden conectar protoboard-arduino
+    // Los pines del wire se actualizan dinámicamente
     this.pins = [
       {
         id: `${this.id}-start`,
@@ -87,12 +86,25 @@ export class Wire extends Component {
       const colLabel = (conn.col! + 1).toString();
       return `${rowLabel}${colLabel}`;
     } else {
-      return `Arduino ${conn.pinType}${conn.pinIndex}`;
+      return `${conn.pinType}${conn.pinIndex}`;
     }
   }
 
   calculateState(): void {
-    // Un cable simplemente conduce electricidad
-    // El voltaje se propaga a través del ConnectionManager
+    // Un cable conduce electricidad en ambas direcciones
+    // Si un extremo tiene voltaje, el otro también debería tenerlo
+    
+    if (!this.isComplete()) return;
+    
+    const pin0Voltage = this.pins[0].voltage;
+    const pin1Voltage = this.pins[1].voltage;
+    
+    // Propagar el voltaje más alto en ambas direcciones
+    const maxVoltage = Math.max(pin0Voltage, pin1Voltage);
+    
+    if (maxVoltage > 0) {
+      this.pins[0].voltage = maxVoltage;
+      this.pins[1].voltage = maxVoltage;
+    }
   }
 }
